@@ -1,0 +1,5 @@
+testiranje miler rrabina
+http://homepages.math.uic.edu/~leon/mcs425-s08/handouts/Rabin-Miller-Examples.pdf
+
+biranje broja iteracija miler rabina
+https://localcoder.org/how-many-iterations-of-rabin-miller-should-i-use-for-cryptographic-safe-primes
