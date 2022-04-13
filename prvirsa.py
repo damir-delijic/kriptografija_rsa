@@ -1,32 +1,36 @@
+# in python, it is not necessary to represent big integers with strings?
+
+# built-in module
 import random
 
 # n - number
 # k - number of rounds
 def miller_rabin(n, k):
     # writing n  as (2^r) * d + 1
+    temp = n - 1
     r = 0
-    d = n - 1
-    while not ( d & 1 ):
-        d >>= 1
+    d = 0
+    while( temp % 2 == 0):
+        temp = temp / 2
         r += 1
-        
+    d = int(temp)
     # witness loop
-    for _ in range(k):
-        # pick a random integer a in the range -[2, n − 2]-
+    continue_witness_loop = False
+    for i in range(k):
+        # pick a random integer a in the range -[2, n − 2]-, pseudorandom?
         a = random.randint(2, n - 2) # flaw: pseudorandom
         x = pow(a, d, n)
         if (x == 1 or x == n-1):
             continue
-        
-        for _ in range(r - 1):
+        for j in range(r - 1):
             x = pow(x, 2, n)
-            if (x == 1):
-                return False
             if ( x == n - 1 ):
+                continue_witness_loop = True
                 break
-        else:
-            return False
-        
+        if(continue_witness_loop):
+            continue_witness_loop = False
+            continue
+        return False
     return True
     #output: false if it is composite, true if it is probably prime
 
@@ -35,7 +39,7 @@ def miller_rabin(n, k):
 # k - number of rounds for miller rabin
 def prim_num_find(b):
     # k treba da bude funckija od b?
-    k = 4
+    k = 10
     while True:
         n = random.randint(pow(2, b - 1), pow(2, b) - 1)
         # making sure it is odd
@@ -46,9 +50,18 @@ def prim_num_find(b):
 
 # assumes a > b
 def gcd_euclid(a, b):
-    while b != 0:
-        (a, b) = (b, a % b)
-    return a
+    if(b > a):
+        return gcd_euclid(b, a)
+
+    if b == 0:
+        return a
+    
+    if a == 0:
+        return b
+
+    if(a % b == 0):
+        return b
+    return gcd_euclid(b, a % b)
 
 def find_e(fi):
     e = random.randint(2, fi - 1)
@@ -93,7 +106,7 @@ def num_to_text(num):
         temp = temp / 100
     return text
 
-key_len = 1024
+key_len = 128
 p, q, n, fi, e, d = rsa_set(key_len)
 
 plain_text = 123456789
