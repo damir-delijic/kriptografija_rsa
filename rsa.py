@@ -1,3 +1,4 @@
+from math import gcd
 import random
 
 # n - number
@@ -37,10 +38,7 @@ def prim_num_find(b):
     # k treba da bude funckija od b?
     k = 4
     while True:
-        n = random.randint(pow(2, b - 1), pow(2, b) - 1)
-        # making sure it is odd
-        if(n % 2 == 0):
-            n += 1
+        n = random.randrange(pow(2, b - 1) + 1, pow(2, b) - 1, 2)
         if miller_rabin(n, k):
             return n # flaws: strong probable prime, not definite. worst-case running time - infinte but with a probability of zero, complexity, accuracy? 
 
@@ -51,21 +49,20 @@ def gcd_euclid(a, b):
     return a
 
 def find_e(fi):
-    e = random.randint(2, fi - 1)
-    while gcd_euclid(fi, e) != 1:
-        e = random.randint(2, fi - 1)
-    return e
+    while gcd_euclid(fi, e:= random.randrange(3, fi -1, 2)) != 1:
+        pass
+    else:
+        return e
 
 # pretpostavlja da je poruka kraca od kljuca jer u suportnom ne bi trebalo korististi rsa za enkripciju vec rsa+ neki simetricni
 def rsa_set(b):
     p = prim_num_find(b)
     q = prim_num_find(b)
+    
     n = p * q
     fi = (p - 1) * (q - 1)
+
     e = find_e(fi)
-    
-    # x*y == 1 mod p
-    # y = pow(x, -1, p) for python 3.8+
     d = pow(e, -1, fi)
     
     return p, q, n, fi, e, d
@@ -93,7 +90,7 @@ def num_to_text(num):
         temp = temp / 100
     return text
 
-key_len = 1024
+key_len = 1028
 p, q, n, fi, e, d = rsa_set(key_len)
 
 plain_text = 123456789
