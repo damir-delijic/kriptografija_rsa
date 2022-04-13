@@ -1,4 +1,3 @@
-from math import gcd
 import random
 
 # n - number
@@ -36,10 +35,13 @@ def miller_rabin(n, k):
 # k - number of rounds for miller rabin
 def prim_num_find(b):
     # k treba da bude funckija od b?
-    k = 4
+    if b >= 1024:
+        k = 5
+    else:
+        k = 10
+
     while True:
-        n = random.randrange(pow(2, b - 1) + 1, pow(2, b) - 1, 2)
-        if miller_rabin(n, k):
+        if miller_rabin(n := random.randrange(pow(2, b - 1) + 1, pow(2, b) - 1, 2), k):
             return n # flaws: strong probable prime, not definite. worst-case running time - infinte but with a probability of zero, complexity, accuracy? 
 
 # assumes a > b
@@ -90,7 +92,7 @@ def num_to_text(num):
         temp = temp / 100
     return text
 
-key_len = 1028
+key_len = 512
 p, q, n, fi, e, d = rsa_set(key_len)
 
 plain_text = 123456789

@@ -5,6 +5,8 @@ import random
 
 # n - number
 # k - number of rounds
+
+# plus prvi miler rabin koristio rucno pisanu funkciju za trazenje modula pri stepenovanju
 def miller_rabin(n, k):
     # writing n  as (2^r) * d + 1
     temp = n - 1
