@@ -1,5 +1,4 @@
 import random
-from tokenize import PlainToken
 
 # n - number
 # k - number of rounds
