@@ -69,11 +69,13 @@ def rsa_set(b):
     
     return p, q, n, fi, e, d
 
-def rsa_enc_str(m, n, e):
+def rsa_enc_str(str, n, e):
+    m = text_to_num(str)
     return pow(m, e, n)
 
 def rsa_dec_str(c, n, d):
-    return pow(c, d, n)
+    m = pow(c, d, n)
+    return num_to_text(m)
 
 def text_to_num(str):
     num = 0
@@ -93,12 +95,7 @@ key_len = 512
 p, q, n, fi, e, d = rsa_set(key_len)
 
 plaintext = "content delivery network"
-print("plain= ", plaintext)
-plain_to_num = text_to_num(plaintext)
-print("plan_num= ", plain_to_num)
-encrypted = rsa_enc_str(plain_to_num, n, e)
+encrypted = rsa_enc_str(plaintext, n, e)
 print("encrypted= ", encrypted)
 decrypted = rsa_dec_str(encrypted, n, d)
 print("decrypted= ", decrypted)
-result =  num_to_text(decrypted)
-print("result= ", result)
