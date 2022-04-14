@@ -1,4 +1,5 @@
 import random
+from tokenize import PlainToken
 
 # n - number
 # k - number of rounds
@@ -77,27 +78,28 @@ def rsa_dec_str(c, n, d):
 
 def text_to_num(str):
     num = 0
-    i = 0
     for ch in str:
-        num = num * 100
-        num = num + (ord(ch) - 87)
-        i += 1
+        num = num * 1000
+        num = num + (ord(ch) + 100)
     return num
 
 def num_to_text(num):
     text = ""
-    temp = num
-    while(temp > 0):
-        text = chr((num % 100) + 87) + text
-        temp = temp / 100
+    while(num > 0):
+        text = chr((num % 1000) - 100) + text
+        num = num // 1000
     return text
-
+# flaw koristi 3 decimalne cifre da kodira oko 150 vrijednosti, tri binarne cifre vise nego sto treba, ali ko ga jebe
 key_len = 512
 p, q, n, fi, e, d = rsa_set(key_len)
 
-plain_text = 123456789
-print("plain= ", plain_text)
-cyphertext = rsa_enc_str(plain_text, n, e)
-print("cypher= ", cyphertext)
-plaintext = rsa_dec_str(cyphertext, n, d)
+plaintext = "content delivery network"
 print("plain= ", plaintext)
+plain_to_num = text_to_num(plaintext)
+print("plan_num= ", plain_to_num)
+encrypted = rsa_enc_str(plain_to_num, n, e)
+print("encrypted= ", encrypted)
+decrypted = rsa_dec_str(encrypted, n, d)
+print("decrypted= ", decrypted)
+result =  num_to_text(decrypted)
+print("result= ", result)
