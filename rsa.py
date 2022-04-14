@@ -69,6 +69,21 @@ def rsa_set(b):
     
     return p, q, n, fi, e, d
 
+def rsa_enc_text(text, n, e):
+    limit = 100
+    encrypted_text = rsa_enc_str(text[0:limit], n, e)
+    while limit < len(text):
+        limit += 100
+        encrypted_text += rsa_enc_str(text[limit-100 : limit], n, e)
+    return encrypted_text
+
+# def rsa_dec_text(num, n, d):
+#     decrypted_text = rsa_dec_str(text[0:limit], n, d)
+#     while limit < len(text):
+#         limit += 100
+#         decrypted_text += rsa_dec_str(text[limit-100 : limit], n, d)
+#     return decrypted_text
+
 def rsa_enc_str(str, n, e):
     m = text_to_num(str)
     return pow(m, e, n)
@@ -94,8 +109,8 @@ def num_to_text(num):
 key_len = 512
 p, q, n, fi, e, d = rsa_set(key_len)
 
-plaintext = "content delivery network"
-encrypted = rsa_enc_str(plaintext, n, e)
+plaintext = "network content network content network content network content network content network content networ"
+encrypted = rsa_enc_text(plaintext, n, e)
 print("encrypted= ", encrypted)
-decrypted = rsa_dec_str(encrypted, n, d)
+decrypted = rsa_dec_text(encrypted, n, d)
 print("decrypted= ", decrypted)
