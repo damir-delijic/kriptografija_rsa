@@ -1,3 +1,4 @@
+
 import random
 
 # n - number
@@ -69,35 +70,52 @@ def rsa_set(b):
     
     return p, q, n, fi, e, d
 
-def rsa_enc_str(m, n, e):
+def rsa_enc(m, n, e):
     return pow(m, e, n)
 
-def rsa_dec_str(c, n, d):
+def rsa_dec(c, n, d):
     return pow(c, d, n)
 
-def text_to_num(str):
-    num = 0
+def ENCRYPT_MESSAGE(plaintext, n, e):
+    temp = encode_message(plaintext)
+    m = int(temp)
+    c = rsa_enc(m, n, e)
+    return str(c)
+
+def encode_message(string):
+    encoded = ""
+    for ch in string:
+        temp = str(ord(ch))
+        while(len(temp) % 3 != 0):
+            temp = "0" + temp
+        encoded = encoded +  temp
+    return encoded
+
+def DECRYPT_MESSAGE(c, n, d):
+    c = int(c)
+    m = rsa_dec(c, n, d)
+    m = str(m)
+    return decode_message(m)
+
+def decode_message(m):
+    decoded = ""
+    while(len(m) % 3 != 0):
+        m = "0" + m
     i = 0
-    for ch in str:
-        num = num * 100
-        num = num + (ord(ch) - 87)
-        i += 1
-    return num
+    while(i < len(m)):
+        temp = m[i:i+3]
+        temp = int(temp)
+        temp = chr(temp)
+        decoded = decoded + temp
+        i += 3
+    return decoded
 
-def num_to_text(num):
-    text = ""
-    temp = num
-    while(temp > 0):
-        text = chr((num % 100) + 87) + text
-        temp = temp / 100
-    return text
-
-key_len = 512
+key_len = 1024
 p, q, n, fi, e, d = rsa_set(key_len)
 
-plain_text = 123456789
-print("plain= ", plain_text)
-cyphertext = rsa_enc_str(plain_text, n, e)
-print("cypher= ", cyphertext)
-plaintext = rsa_dec_str(cyphertext, n, d)
-print("plain= ", plaintext)
+plain = "anavolimilovana"
+print(plain)
+c = ENCRYPT_MESSAGE(plain, n , e)
+print(c)
+p = DECRYPT_MESSAGE(c, n, d)
+print(p)
