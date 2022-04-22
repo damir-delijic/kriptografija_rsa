@@ -110,12 +110,15 @@ def decode_message(m):
         i += 3
     return decoded
 
-key_len = 1024
-p, q, n, fi, e, d = rsa_set(key_len)
+class Rsa:
 
-plain = "anavolimilovana"
-print(plain)
-c = ENCRYPT_MESSAGE(plain, n , e)
-print(c)
-p = DECRYPT_MESSAGE(c, n, d)
-print(p)
+    def __init__(self, b):
+        self.b = b
+        self.p, self.q, self.n, self.fi, self.e, self.d = rsa_set(self.b)
+
+    def DECRYPT_MESSAGE(self, cypher):
+        return DECRYPT_MESSAGE(cypher, self.n, self.d)
+
+    def ENCRYPT_MESSAFE(self, plain):
+        return ENCRYPT_MESSAGE(plain, self.n, self.e)
+
