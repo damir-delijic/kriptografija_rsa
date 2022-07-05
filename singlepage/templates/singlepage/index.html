@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .loader {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                z-index: 1;
+                width: 120px;
+                height: 120px;
+                margin: -76px 0 0 -76px;
+                border: 16px solid aqua;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                -webkit-animation: spin 2s linear infinite;
+                animation: spin 2s linear infinite;
+            }  
+
+            @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+            }
+        </style>
+        <title>RSA</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+    <body style="background-color:#F8F9FA">
+        <div id="loader"></div>
+        <div class="row">
+            <div class="col-md-12" style="text-align:center">
+                <h1>RSA Algorithm</h1>
+                <h6>Choose key size</h6>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <select name="key" id="key" class="form-control">
+                            <option value="256" selected="selected">256 bit</option>
+                            <option value="512">512 bit</option>
+                            <option value="1024">1024 bit</option>
+                            <option value="2048">2048 bit</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div>
+                    <button id="generate_keys" class="btn btn-primary" style="margin-top:10px">
+                        Generate RSA key pair
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4" style="text-align: right;">
+                <h2>Public key</h2>
+                <textarea id="publickey" name="publickey" rows="4" cols="50" placeholder="Public key will appear here"></textarea>
+                <h3>RSA Encryption</h3>
+                <h4>Enter plain text to encrypt</h4>
+                <textarea id="enter_plain_to_encrypt" name="enter_plain_to_encrypt" rows="3" cols="50" placeholder="Enter plaintext to encrypt"></textarea>
+                <div>
+                    <button id="encrypt" class="btn btn-primary" style="margin-top:10px">Encrypt</button>
+                </div>
+                <h4>Encrypted output</h4>
+                <textarea id="encrypted_output" name="encrypted_output" rows="3" cols="50" placeholder="Result will appear here"></textarea>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4" style="text-align: left;">
+                <h2>Private key</h2>
+                <textarea id="privatekey" name="privatekey" rows="4" cols="50" placeholder="Private key will appear here"></textarea>
+                <h3>RSA Decryption</h3>
+                <h4>Enter cypher text to decrypt</h4>
+                <textarea id="enter_encrypted_to_decrypt" name="enter_encrypted_to_decrypt" rows="3" cols="50" placeholder="Enter cyphertext to decrypt"></textarea>
+                <div>
+                    <button id="decrypt" class="btn btn-primary" style="margin-top:10px">Decrypt</button>
+                </div>
+                <h4>Decrypted output</h4>
+                <textarea id="decrypted_output" name="decrypted_output" rows="3" cols="50" placeholder="Result will appear here"></textarea>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-md-5"></div>
+            <div class="col-md-2" style="text-align: center;">
+                <div>Damir Delijic</div>
+                <div>Vojislav Djilas</div>
+                <div>Enida Krnic</div>
+            </div>
+            <div class="col-md-5"></div>
+        </div>
+        <script>
+
+            function generate_key(key_size) {
+                document.getElementById('loader').classList.add('loader')
+                fetch(`/generate_key/${key_size}`)
+                .then(data => {return data.json()})
+                .then(res => {
+                    document.getElementById('loader').classList.remove('loader')
+                    document.getElementById("publickey").value = res.public_key
+                    document.getElementById("privatekey").value = res.public_key
+                });
+            }
+
+            function encrypt(plaintext){
+                document.getElementById('loader').classList.add('loader')
+                $.post('/encrypt', {text: plaintext}, function(data, status){
+                    document.getElementById('loader').classList.remove('loader')
+                    data = $.parseJSON(data);
+                    if(status == "success"){
+                        document.getElementById("encrypted_output").value = data.result;
+                    }else{
+                        document.getElementById("encrypted_output").value = "Error occureds";
+                    }
+                });
+            }
+
+            function decrypt(cyphertext){
+                document.getElementById('loader').classList.add('loader')
+                $.post('/decrypt', {text: cyphertext}, function(data, status){
+                    data = $.parseJSON(data);
+                    document.getElementById('loader').classList.remove('loader')
+                    if(status == "success"){
+                        document.getElementById("decrypted_output").value = data.result;
+                    }else{
+                        document.getElementById("decrypted_output").value = "Error occureds";
+                    }
+                });
+            }
+
+            $(document).ready(function(){
+                document.getElementById("generate_keys").onclick = function(){
+                    var e = document.getElementById("key");
+                    var key_size = e.options[e.selectedIndex].text;
+                    generate_key(parseInt(key_size));
+                };
+
+                document.getElementById("encrypt").onclick = function(){
+                    var e = document.getElementById("enter_plain_to_encrypt");
+                    var plaintext = e.value;
+                    encrypt(plaintext);
+                }
+
+                document.getElementById("decrypt").onclick = function(){
+                    var e = document.getElementById("enter_encrypted_to_decrypt");
+                    var cyphertext = e.value;
+                    decrypt(cyphertext);
+                }
+            });
+            
+
+        </script>
+    </body>
+</html>
